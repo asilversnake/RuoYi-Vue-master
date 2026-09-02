@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.exam.mapper.ExamRecordMapper">
+
+    <resultMap type="ExamRecord" id="ExamRecordResult">
+        <result property="id"    column="id"    />
+        <result property="examName"    column="exam_name"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="studentId"    column="student_id"    />
+        <result property="score"    column="score"    />
+        <result property="correctCount"    column="correct_count"    />
+        <result property="wrongCount"    column="wrong_count"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+
+        <!-- 【重要】补全了 duration 和 endTime 的映射 -->
+        <result property="duration"    column="duration"    />
+        <result property="endTime"    column="end_time"    />
+    </resultMap>
+
+    <sql id="selectExamRecordVo">
+        select id, exam_name, start_time, student_id, score, correct_count, wrong_count, create_time, update_time, duration, end_time
+        from exam_record
+    </sql>
+
+    <select id="selectExamRecordList" parameterType="ExamRecord" resultMap="ExamRecordResult">
+        <include refid="selectExamRecordVo"/>
+        <where>
+            <if test="examName != null  and examName != ''"> and exam_name like concat('%', #{examName}, '%')</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="studentId != null  and studentId != ''"> and student_id = #{studentId}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="correctCount != null "> and correct_count = #{correctCount}</if>
+            <if test="wrongCount != null "> and wrong_count = #{wrongCount}</if>
+        </where>
+    </select>
+
+    <select id="selectExamRecordById" parameterType="Long" resultMap="ExamRecordResult">
+        <include refid="selectExamRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertExamRecord" parameterType="ExamRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into exam_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="examName != null">exam_name,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="studentId != null">student_id,</if>
+            <if test="score != null">score,</if>
+            <if test="correctCount != null">correct_count,</if>
+            <if test="wrongCount != null">wrong_count,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+
+            <!-- 【重要】补全了 duration 和 end_time 的插入 -->
+            <if test="duration != null">duration,</if>
+            <if test="endTime != null">end_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="examName != null">#{examName},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="studentId != null">#{studentId},</if>
+            <if test="score != null">#{score},</if>
+            <if test="correctCount != null">#{correctCount},</if>
+            <if test="wrongCount != null">#{wrongCount},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+
+            <!-- 【重要】补全了 duration 和 endTime 的值 -->
+            <if test="duration != null">#{duration},</if>
+            <if test="endTime != null">#{endTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateExamRecord" parameterType="ExamRecord">
+        update exam_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="examName != null">exam_name = #{examName},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="studentId != null">student_id = #{studentId},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="correctCount != null">correct_count = #{correctCount},</if>
+            <if test="wrongCount != null">wrong_count = #{wrongCount},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+
+            <!-- 【重要】补全了 duration 和 end_time 的更新 -->
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExamRecordById" parameterType="Long">
+        delete from exam_record where id = #{id}
+    </delete>
+
+    <delete id="deleteExamRecordByIds" parameterType="String">
+        delete from exam_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
